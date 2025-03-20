@@ -25,7 +25,7 @@
       max-width: 800px;
       margin: 0 auto;
       padding: 20px;
-      padding-bottom: 60px; /* Espaço para o indicador fixo */
+      padding-bottom: 100px; /* Espaço extra para os botões fixos */
     }
     .box {
       background-color: rgba(255, 255, 255, 0.8);
@@ -74,7 +74,6 @@
       transform: scale(1.1);
     }
     .hidden { display: none; }
-    /* Efeito fade para transição */
     .fade {
       opacity: 0;
       transition: opacity 0.5s ease-in-out;
@@ -90,6 +89,7 @@
       background-color: rgba(255, 255, 255, 0.8);
       padding: 5px 10px;
       border-radius: 5px;
+      z-index: 1000;
     }
     /* Spinner de carregamento para a página 7 */
     .spinner {
@@ -118,6 +118,17 @@
     }
     #kitLink:hover, #manualLink:hover {
       background-color: rgba(0, 86, 179, 0.4);
+    }
+    /* Contêiner fixo para os botões das páginas 5 e 6 */
+    .fixed-button {
+      position: fixed;
+      bottom: 60px; /* Ajuste a distância do fundo, se necessário */
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: rgba(0, 123, 255, 0.4);
+      padding: 10px 20px;
+      border-radius: 5px;
+      z-index: 1000;
     }
   </style>
 </head>
@@ -212,278 +223,7 @@
         <div class="option">
           <input type="radio" name="skinType" value="mista" id="skinMista">
           <img src="imagens/imagem4.jpg" alt="Mista">
-          <label for="skinMista">Mista</label>
-        </div>
-        <div class="option">
-          <input type="radio" name="skinType" value="sensivel" id="skinSensivel">
-          <img src="imagens/imagem5.jpg" alt="Sensível">
-          <label for="skinSensivel">Sensível</label>
-        </div>
-      </form>
-    </div>
-    <button onclick="nextPage()">Próximo</button>
-  </div>
-
-  <!-- Página 6 -->
-  <div id="page6" class="container fade hidden">
-    <div class="box">
-      <p>Qual o desafio da sua pele?</p>
-      <form id="challengeForm">
-        <!-- As opções serão geradas dinamicamente conforme o tipo de pele selecionado -->
-      </form>
-    </div>
-    <button onclick="generateKit()">Gerar Kit Skincare Ideal</button>
-  </div>
-
-  <!-- Página 7 (Tela de espera com fundo preto e animação de carregamento) -->
-  <div id="page7" class="container fade hidden" style="background-color: black; color: white;">
-    <div class="box" style="background-color: rgba(0,0,0,0.8);">
-      <div class="spinner"></div>
-      <p>Estamos desenvolvendo o Kit perfeito para sua rotina Skincare...</p>
-    </div>
-  </div>
-
-  <!-- Página 8 (Resultado com link, fundo dinâmico, descrição, PDF para download e botões destacados) -->
-  <div id="page8" class="container fade hidden">
-    <div class="box">
-      <p>
-        Ao acessar o link abaixo, será exibido um kit com os produtos mais indicados para o cuidado da sua pele em casa.
-        Caso prefira, é possível remover os itens que não desejar e adquirir apenas os produtos de sua escolha.
-      </p>
-      <a id="kitLink" href="#" style="font-size:1.2rem; text-decoration: none;"></a>
-      <br>
-      <a id="manualLink" href="#" download style="font-size:1rem; text-decoration: none; display:block; margin-top:20px;"></a>
-    </div>
-  </div>
-
-  <script>
-    // Variáveis para armazenar o estado
-    let currentPage = 1;
-    let skinTypeSelected = '';
-    let challengeSelected = '';
-
-    // Atualiza o indicador de progresso
-    function updateProgress() {
-      document.getElementById('progress').innerText = 'Página ' + currentPage + '/8';
-    }
-
-    // Exibe a página indicada e esconde as demais
-    function showPage(pageNum) {
-      console.log('Mostrando página:', pageNum);
-      for (let i = 1; i <= 8; i++) {
-        const el = document.getElementById('page' + i);
-        el.classList.add('hidden');
-        el.classList.remove('show');
-      }
-      const page = document.getElementById('page' + pageNum);
-      page.classList.remove('hidden');
-      // Força o reflow para aplicar a animação de fade
-      void page.offsetWidth;
-      page.classList.add('show');
-      currentPage = pageNum;
-      updateProgress();
-      
-      // Define o fundo de acordo com a página
-      if (pageNum >= 1 && pageNum <= 6) {
-        document.body.style.backgroundImage = "url('imagens/fundo.jpg')";
-        document.body.style.backgroundColor = "";
-      } else if (pageNum === 7) {
-        document.body.style.backgroundImage = "none";
-        document.body.style.backgroundColor = "black";
-      }
-    }
-
-    // Função para avançar para a próxima página com validações
-    function nextPage() {
-      console.log('nextPage() chamada. Página atual:', currentPage);
-      if (currentPage === 2) {
-        const nome = document.getElementById('nome').value;
-        if (!nome) { 
-          alert('Por favor, insira seu nome.');
-          return; 
-        }
-      }
-      if (currentPage === 3) {
-        const age = document.querySelector('input[name="age"]:checked');
-        if (!age) { 
-          alert('Selecione a sua faixa etária.');
-          return; 
-        }
-      }
-      if (currentPage === 5) {
-        const skinType = document.querySelector('input[name="skinType"]:checked');
-        if (!skinType) { 
-          alert('Selecione o seu tipo de pele.');
-          return; 
-        }
-        skinTypeSelected = skinType.value;
-        populateChallenges(skinTypeSelected);
-      }
-      if (currentPage < 6) {
-        showPage(currentPage + 1);
-      }
-    }
-
-    // Gera as opções da página 6 conforme o tipo de pele escolhido
-    function populateChallenges(skinType) {
-      const challenges = {
-        "normal": [
-          { text: "Rugas / Linhas de expressão / Flacidez do rosto", image: "imagem8.jpg", key: "rugas" },
-          { text: "Manchas escuras / Melasma / Cicatrizes de acne", image: "imagem10.jpg", key: "manchas" },
-          { text: "Textura irregular", image: "imagem14.jpg", key: "textura" },
-          { text: "Olheiras / Bolsas abaixo dos olhos", image: "imagem15.jpg", key: "olheiras" },
-          { text: "Iniciar / Manter os cuidados com a pele", image: "imagem17.jpg", key: "manter" }
-        ],
-        "seca": [
-          { text: "Rugas / Linhas de expressão / Flacidez do rosto", image: "imagem8.jpg", key: "rugas" },
-          { text: "Manchas escuras / Melasma / Cicatrizes de acne", image: "imagem10.jpg", key: "manchas" },
-          { text: "Ressecamento / descamação", image: "imagem12.jpg", key: "ressecamento" },
-          { text: "Textura irregular", image: "imagem14.jpg", key: "textura" },
-          { text: "Olheiras / Bolsas abaixo dos olhos", image: "imagem15.jpg", key: "olheiras" },
-          { text: "Iniciar / Manter os cuidados com a pele", image: "imagem17.jpg", key: "manter" }
-        ],
-        "oleosa": [
-          { text: "Acne", image: "imagem6.jpg", key: "acne" },
-          { text: "oleosidade/excesso de brilho", image: "imagem3.jpg", key: "oleosidade" },
-          { text: "Rugas / Linhas de expressão / Flacidez do rosto", image: "imagem8.jpg", key: "rugas" },
-          { text: "Manchas escuras / Melasma / Cicatrizes de acne", image: "imagem10.jpg", key: "manchas" },
-          { text: "Poros dilatados", image: "imagem13.jpg", key: "poros" },
-          { text: "Textura irregular", image: "imagem14.jpg", key: "textura" },
-          { text: "Olheiras / Bolsas abaixo dos olhos", image: "imagem15.jpg", key: "olheiras" },
-          { text: "Iniciar / Manter os cuidados com a pele", image: "imagem17.jpg", key: "manter" }
-        ],
-        "mista": [
-          { text: "oleosidade/excesso de brilho", image: "imagem3.jpg", key: "oleosidade" },
-          { text: "Rugas / Linhas de expressão / Flacidez do rosto", image: "imagem8.jpg", key: "rugas" },
-          { text: "Manchas escuras / Melasma / Cicatrizes de acne", image: "imagem10.jpg", key: "manchas" },
-          { text: "Poros dilatados", image: "imagem13.jpg", key: "poros" },
-          { text: "Textura irregular", image: "imagem14.jpg", key: "textura" },
-          { text: "Olheiras / Bolsas abaixo dos olhos", image: "imagem15.jpg", key: "olheiras" },
-          { text: "Iniciar / Manter os cuidados com a pele", image: "imagem17.jpg", key: "manter" }
-        ],
-        "sensivel": [
-          { text: "Rugas / Linhas de expressão / Flacidez do rosto", image: "imagem8.jpg", key: "rugas" },
-          { text: "Rosácea / Sensibilidade extrema / Irritação recorrente", image: "imagem5.jpg", key: "rosacea" },
-          { text: "Manchas escuras / Melasma / Cicatrizes de acne", image: "imagem10.jpg", key: "manchas" },
-          { text: "Poros dilatados", image: "imagem13.jpg", key: "poros" },
-          { text: "Textura irregular", image: "imagem14.jpg", key: "textura" },
-          { text: "Olheiras / Bolsas abaixo dos olhos", image: "imagem15.jpg", key: "olheiras" },
-          { text: "Iniciar / Manter os cuidados com a pele", image: "imagem17.jpg", key: "manter" }
-        ]
-      };
-      const form = document.getElementById('challengeForm');
-      form.innerHTML = "";
-      challenges[skinType].forEach((option, index) => {
-        const div = document.createElement('div');
-        div.className = 'option';
-        div.style.marginBottom = "20px";
-        const input = document.createElement('input');
-        input.type = 'radio';
-        input.name = 'challenge';
-        input.value = option.key;
-        input.id = 'challenge' + index;
-        const img = document.createElement('img');
-        img.src = 'imagens/' + option.image;
-        img.alt = option.text;
-        const label = document.createElement('label');
-        label.htmlFor = input.id;
-        label.innerText = option.text;
-        div.appendChild(input);
-        div.appendChild(img);
-        div.appendChild(label);
-        form.appendChild(div);
-      });
-    }
-    
-    // Mapeamento dos resultados para a página 8, incluindo o PDF para download
-    var resultsMapping = {
-      "normal": {
-        "rugas": { buttonText: "KIT SKINCARE PELE NORMAL/RUGAS", url: "https://www.bioage.com.br/professional/cart/create?code=c6fe5c94d07342", bg: "imagens/fundo1.jpg", pdf: "pdf/normal_rugas.pdf" },
-        "manchas": { buttonText: "KIT SKINCARE PELE NORMAL/MANCHAS", url: "https://www.bioage.com.br/professional/cart/create?code=ce024bba0a06f4", bg: "imagens/fundo2.jpg", pdf: "pdf/normal_manchas.pdf" },
-        "textura": { buttonText: "KIT SKINCARE PELE NORMAL/TEXTURA IRREGULAR", url: "https://www.bioage.com.br/professional/cart/create?code=c9177722052e73", bg: "imagens/fundo3.jpg", pdf: "pdf/normal_textura.pdf" },
-        "olheiras": { buttonText: "KIT SKINCARE PELE NORMAL/OLHEIRAS/BOLSAS", url: "https://www.bioage.com.br/professional/cart/create?code=c099b95cfbc592", bg: "imagens/fundo4.jpg", pdf: "pdf/normal_olheiras.pdf" },
-        "manter": { buttonText: "KIT SKINCARE PELE NORMAL/MANUTENÇÃO", url: "https://www.bioage.com.br/professional/cart/create?code=cb488123148ae3", bg: "imagens/fundo5.jpg", pdf: "pdf/normal_manter.pdf" }
-      },
-      "seca": {
-        "rugas": { buttonText: "KIT SKINCARE PELE SECA/RUGAS", url: "https://www.bioage.com.br/professional/cart/create?code=c27058bf5435c0", bg: "imagens/fundo6.jpg", pdf: "pdf/seca_rugas.pdf" },
-        "manchas": { buttonText: "KIT SKINCARE PELE SECA/MANCHAS", url: "https://www.bioage.com.br/professional/cart/create?code=c576effffa9d44", bg: "imagens/fundo7.jpg", pdf: "pdf/seca_manchas.pdf" },
-        "textura": { buttonText: "KIT SKINCARE PELE SECA/TEXTURA IRREGULAR", url: "https://www.bioage.com.br/professional/cart/create?code=c82c339b452790", bg: "imagens/fundo8.jpg", pdf: "pdf/seca_textura.pdf" },
-        "olheiras": { buttonText: "KIT SKINCARE PELE SECA/OLHEIRAS/BOLSAS", url: "https://www.bioage.com.br/professional/cart/create?code=c0da964a3bc0f3", bg: "imagens/fundo9.jpg", pdf: "pdf/seca_olheiras.pdf" },
-        "ressecamento": { buttonText: "KIT SKINCARE PELE SECA/RESSECAMENTO", url: "https://www.bioage.com.br/professional/cart/create?code=secRes", bg: "imagens/fundoRessecamento.jpg", pdf: "pdf/seca_ressecamento.pdf" },
-        "manter": { buttonText: "KIT SKINCARE PELE SECA/MANUTENÇÃO", url: "https://www.bioage.com.br/professional/cart/create?code=ca00d8b5b4709f", bg: "imagens/fundo10.jpg", pdf: "pdf/seca_manter.pdf" }
-      },
-      "oleosa": {
-        "acne": { buttonText: "KIT SKINCARE PELE OLEOSA/ACNE", url: "https://www.bioage.com.br/professional/cart/create?code=c9c716fee63cf4", bg: "imagens/fundo12.jpg", pdf: "pdf/oleosa_acne.pdf" },
-        "oleosidade": { buttonText: "KIT SKINCARE PELE OLEOSA/OLEOSIDADE", url: "https://www.bioage.com.br/professional/cart/create?code=ca378940a8b552", bg: "imagens/fundo13.jpg", pdf: "pdf/oleosa_oleosidade.pdf" },
-        "rugas": { buttonText: "KIT SKINCARE PELE OLEOSA/RUGAS", url: "https://www.bioage.com.br/professional/cart/create?code=cf96738128ecad", bg: "imagens/fundo13.jpg", pdf: "pdf/oleosa_rugas.pdf" },
-        "manchas": { buttonText: "KIT SKINCARE PELE OLEOSA/MANCHAS", url: "https://www.bioage.com.br/professional/cart/create?code=c0a6edd71b61fb", bg: "imagens/fundo11.jpg", pdf: "pdf/oleosa_manchas.pdf" },
-        "poros": { buttonText: "KIT SKINCARE PELE OLEOSA/POROS DILATADOS", url: "https://www.bioage.com.br/professional/cart/create?code=caeea137bf61a5", bg: "imagens/fundo14.jpg", pdf: "pdf/oleosa_poros.pdf" },
-        "textura": { buttonText: "KIT SKINCARE PELE OLEOSA/TEXTURA IRREGULAR", url: "https://www.bioage.com.br/professional/cart/create?code=cef863bc962f6d", bg: "imagens/fundo15.jpg", pdf: "pdf/oleosa_textura.pdf" },
-        "olheiras": { buttonText: "KIT SKINCARE PELE OLEOSA/OLHEIRAS", url: "https://www.bioage.com.br/professional/cart/create?code=cc52a91094d4a2", bg: "imagens/fundo16.jpg", pdf: "pdf/oleosa_olheiras.pdf" },
-        "manter": { buttonText: "KIT SKINCARE PELE OLEOSA/MANUTENÇÃO", url: "https://www.bioage.com.br/professional/cart/create?code=cef5018b3aa123", bg: "imagens/fundo17.jpg", pdf: "pdf/oleosa_manter.pdf" }
-      },
-      "mista": {
-        "oleosidade": { buttonText: "KIT SKINCARE PELE MISTA/OLEOSIDADE", url: "https://www.bioage.com.br/professional/cart/create?code=c07841a948d85c", bg: "imagens/fundo18.jpg", pdf: "pdf/mista_oleosidade.pdf" },
-        "rugas": { buttonText: "KIT SKINCARE PELE MISTA/RUGAS", url: "https://www.bioage.com.br/professional/cart/create?code=ce2897f4a7eee0", bg: "imagens/fundo19.jpg", pdf: "pdf/mista_rugas.pdf" },
-        "manchas": { buttonText: "KIT SKINCARE PELE MISTA/MANCHAS", url: "https://www.bioage.com.br/professional/cart/create?code=cc15b9d91ebbde", bg: "imagens/fundo20.jpg", pdf: "pdf/mista_manchas.pdf" },
-        "poros": { buttonText: "KIT SKINCARE PELE MISTA/POROS DILATADOS", url: "https://www.bioage.com.br/professional/cart/create?code=cbcd1f47617180", bg: "imagens/fundo21.jpg", pdf: "pdf/mista_poros.pdf" },
-        "textura": { buttonText: "KIT SKINCARE PELE MISTA/TEXTURA IRREGULAR", url: "https://www.bioage.com.br/professional/cart/create?code=c8b69a2f725164", bg: "imagens/fundo22.jpg", pdf: "pdf/mista_textura.pdf" },
-        "olheiras": { buttonText: "KIT SKINCARE PELE MISTA/OLHEIRAS", url: "https://www.bioage.com.br/professional/cart/create?code=cdef8bc97a0935", bg: "imagens/fundo23.jpg", pdf: "pdf/mista_olheiras.pdf" },
-        "manter": { buttonText: "KIT SKINCARE PELE MISTA/MANUTENÇÃO", url: "https://www.bioage.com.br/professional/cart/create?code=c7dd96a899d299", bg: "imagens/fundo24.jpg", pdf: "pdf/mista_manter.pdf" }
-      },
-      "sensivel": {
-        "rugas": { buttonText: "KIT SKINCARE PELE SENSÍVEL/RUGAS", url: "https://www.bioage.com.br/professional/cart/create?code=cfb6bed417d8d5", bg: "imagens/fundo25.jpg", pdf: "pdf/sensivel_rugas.pdf" },
-        "rosacea": { buttonText: "KIT SKINCARE PELE SENSÍVEL/ROSÁCEA", url: "https://www.bioage.com.br/professional/cart/create?code=c48d67f007290f", bg: "imagens/fundo26.jpg", pdf: "pdf/sensivel_rosacea.pdf" },
-        "manchas": { buttonText: "KIT SKINCARE PELE SENSÍVEL/MANCHAS", url: "https://www.bioage.com.br/professional/cart/create?code=cbc61faa787a30", bg: "imagens/fundo27.jpg", pdf: "pdf/sensivel_manchas.pdf" },
-        "poros": { buttonText: "KIT SKINCARE PELE SENSÍVEL/POROS DILATADOS", url: "https://www.bioage.com.br/professional/cart/create?code=cb1c59c359e459", bg: "imagens/fundo28.jpg", pdf: "pdf/sensivel_poros.pdf" },
-        "textura": { buttonText: "KIT SKINCARE PELE SENSÍVEL/TEXTURA IRREGULAR", url: "https://www.bioage.com.br/professional/cart/create?code=c58c0ee072bbda", bg: "imagens/fundo29.jpg", pdf: "pdf/sensivel_textura.pdf" },
-        "olheiras": { buttonText: "KIT SKINCARE PELE SENSÍVEL/OLHEIRAS", url: "https://www.bioage.com.br/professional/cart/create?code=c429915e2d7fc0", bg: "imagens/fundo30.jpg", pdf: "pdf/sensivel_olheiras.pdf" },
-        "manter": { buttonText: "KIT SKINCARE PELE SENSÍVEL/MANUTENÇÃO", url: "https://www.bioage.com.br/professional/cart/create?code=cd29031912d0d7", bg: "imagens/fundo31.jpg", pdf: "pdf/sensivel_manter.pdf" }
-      }
-    };
-
-    // Função acionada ao clicar em "Gerar Kit Skincare Ideal"
-    function generateKit() {
-      const challenge = document.querySelector('input[name="challenge"]:checked');
-      if (!challenge) { 
-        alert('Selecione o desafio da sua pele.'); 
-        return; 
-      }
-      challengeSelected = challenge.value;
-      showPage(7);
-      // Após 4 segundos, exibe o resultado na página 8
-      setTimeout(showResult, 4000);
-    }
-
-    // Exibe o resultado final, configurando fundo, link e PDF para download conforme a combinação escolhida
-    function showResult() {
-      let result = resultsMapping[skinTypeSelected][challengeSelected];
-      console.log("skinTypeSelected:", skinTypeSelected, "challengeSelected:", challengeSelected, "result:", result);
-      if (!result) {
-        alert("Opção não mapeada. Tente novamente.");
-        return;
-      }
-      // Define o fundo da página 8 conforme o resultado e força sua centralização
-      document.body.style.backgroundImage = "url('" + result.bg + "')";
-      document.body.style.backgroundColor = "";
-      document.body.style.backgroundPosition = "center center";
-      document.body.style.backgroundRepeat = "no-repeat";
-      document.body.style.backgroundSize = "cover";
-      
-      const kitLink = document.getElementById('kitLink');
-      kitLink.innerText = result.buttonText;
-      kitLink.href = result.url;
-      
-      // Atualiza o link para baixar o manual (PDF)
-      const manualLink = document.getElementById('manualLink');
-      manualLink.innerText = "Baixe o Manual para sua Rotina";
-      manualLink.href = result.pdf;
-      
-      showPage(8);
-    }
-  </script>
-</body>
-</html>
+          <label for="skinMista">Mista
 
 
 
