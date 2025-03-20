@@ -90,6 +90,7 @@
       padding: 5px 10px;
       border-radius: 5px;
       z-index: 1000;
+      pointer-events: none;
     }
     /* Spinner de carregamento para a página 7 */
     .spinner {
@@ -122,7 +123,7 @@
     /* Contêiner fixo para os botões das páginas 5 e 6 */
     .fixed-button {
       position: fixed;
-      bottom: 60px; /* Ajuste a distância do fundo, se necessário */
+      bottom: 60px;
       left: 50%;
       transform: translateX(-50%);
       background-color: rgba(0, 123, 255, 0.4);
@@ -156,7 +157,7 @@
   <!-- Página 3 -->
   <div id="page3" class="container fade hidden">
     <div class="box">
-      <p>Qual a sua idade?</p>
+      <p id="ageQuestion">Seja bem vinda <span id="userNamePlaceholder"></span>! Qual a sua idade?</p>
       <form id="ageForm">
         <div style="margin:10px 0;">
           <input type="radio" name="age" value="menos18" id="menos18">
@@ -313,6 +314,8 @@
           alert('Por favor, insira seu nome.');
           return; 
         }
+        // Atualiza o nome na Página 3
+        document.getElementById('userNamePlaceholder').innerText = nome;
       }
       if (currentPage === 3) {
         const age = document.querySelector('input[name="age"]:checked');
@@ -488,4 +491,3 @@
   </script>
 </body>
 </html>
-
