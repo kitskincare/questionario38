@@ -109,7 +109,7 @@
     #kitLink, #manualLink {
       display: inline-block;
       padding: 10px 20px;
-      background-color: rgba(0, 123, 255, 0.4); /* Fundo azul translúcido */
+      background-color: rgba(0, 123, 255, 0.4);
       color: white;
       text-decoration: none;
       border-radius: 5px;
@@ -122,6 +122,9 @@
   </style>
 </head>
 <body>
+  <!-- Indicador de progresso fixo -->
+  <div id="progress" class="progress">Página 1/8</div>
+
   <!-- Página 1 -->
   <div id="page1" class="container fade show">
     <div class="box">
@@ -455,6 +458,7 @@
     // Exibe o resultado final, configurando fundo, link e PDF para download conforme a combinação escolhida
     function showResult() {
       let result = resultsMapping[skinTypeSelected][challengeSelected];
+      console.log("skinTypeSelected:", skinTypeSelected, "challengeSelected:", challengeSelected, "result:", result);
       if (!result) {
         alert("Opção não mapeada. Tente novamente.");
         return;
@@ -480,6 +484,7 @@
   </script>
 </body>
 </html>
+
 
 
 
