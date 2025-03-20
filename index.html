@@ -25,6 +25,7 @@
       max-width: 800px;
       margin: 0 auto;
       padding: 20px;
+      padding-bottom: 60px; /* Espaço para o indicador fixo */
     }
     .box {
       background-color: rgba(255, 255, 255, 0.8);
@@ -79,9 +80,16 @@
       transition: opacity 0.5s ease-in-out;
     }
     .fade.show { opacity: 1; }
-    .progress {
-      margin: 10px;
+    /* Indicador de progresso fixo na parte inferior */
+    #progress {
+      position: fixed;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
       font-weight: bold;
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 5px 10px;
+      border-radius: 5px;
     }
     /* Spinner de carregamento para a página 7 */
     .spinner {
@@ -101,7 +109,7 @@
     #kitLink, #manualLink {
       display: inline-block;
       padding: 10px 20px;
-      background-color: rgba(0, 123, 255, 0.4); /* Fundo azul translúcido (alpha 0.4) */
+      background-color: rgba(0, 123, 255, 0.4); /* Fundo azul translúcido */
       color: white;
       text-decoration: none;
       border-radius: 5px;
@@ -114,9 +122,6 @@
   </style>
 </head>
 <body>
-  <!-- Indicador de progresso -->
-  <div id="progress" class="progress">Página 1/8</div>
-
   <!-- Página 1 -->
   <div id="page1" class="container fade show">
     <div class="box">
@@ -475,5 +480,6 @@
   </script>
 </body>
 </html>
+
 
 
