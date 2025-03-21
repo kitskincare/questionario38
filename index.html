@@ -268,9 +268,10 @@
         Ao acessar o link abaixo, será exibido um kit com os produtos mais indicados para o cuidado da sua pele em casa.
         Caso prefira, é possível remover os itens que não desejar e adquirir apenas os produtos de sua escolha.
       </p>
-      <a id="kitLink" href="#" style="font-size:1.2rem; text-decoration: none;"></a>
+      <!-- Adicionamos target="_blank" para que o link abra em nova aba -->
+      <a id="kitLink" href="#" target="_blank" style="font-size:1.2rem; text-decoration: none;"></a>
       <br>
-      <a id="manualLink" href="#" download style="font-size:1rem; text-decoration: none; display:block; margin-top:20px;"></a>
+      <a id="manualLink" href="#" download target="_blank" style="font-size:1rem; text-decoration: none; display:block; margin-top:20px;"></a>
     </div>
   </div>
 
@@ -283,7 +284,6 @@
       document.getElementById('progress').innerText = 'Página ' + currentPage + '/8';
     }
 
-    // Usamos um parâmetro opcional para definir se vamos atualizar o history (pushState)
     function showPage(pageNum, pushState = true) {
       console.log('Mostrando página:', pageNum);
       for (let i = 1; i <= 8; i++) {
@@ -311,7 +311,6 @@
       }
     }
 
-    // Listener para o evento popstate
     window.addEventListener("popstate", function(event) {
       if (event.state && event.state.page) {
         showPage(event.state.page, false);
@@ -495,14 +494,18 @@
       const kitLink = document.getElementById('kitLink');
       kitLink.innerText = result.buttonText;
       kitLink.href = result.url;
+      // Abre em nova aba para manter o estado da Página 8
+      kitLink.setAttribute("target", "_blank");
       
       const manualLink = document.getElementById('manualLink');
       manualLink.innerText = "Baixe o Manual para sua Rotina";
       manualLink.href = result.pdf;
+      manualLink.setAttribute("target", "_blank");
       
       showPage(8);
     }
   </script>
 </body>
 </html>
+
 
