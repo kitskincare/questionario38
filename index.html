@@ -157,7 +157,7 @@
   <!-- Página 3 -->
   <div id="page3" class="container fade hidden">
     <div class="box">
-      <p id="ageQuestion">Seja bem vindo(a) <span id="userNamePlaceholder"></span>! Qual a sua idade?</p>
+      <p id="ageQuestion">Seja bem vinda <span id="userNamePlaceholder"></span>! Qual a sua idade?</p>
       <form id="ageForm">
         <div style="margin:10px 0;">
           <input type="radio" name="age" value="menos18" id="menos18">
@@ -283,7 +283,8 @@
       document.getElementById('progress').innerText = 'Página ' + currentPage + '/8';
     }
 
-    function showPage(pageNum) {
+    // Usamos um parâmetro opcional para definir se vamos atualizar o history (pushState)
+    function showPage(pageNum, pushState = true) {
       console.log('Mostrando página:', pageNum);
       for (let i = 1; i <= 8; i++) {
         const el = document.getElementById('page' + i);
@@ -297,6 +298,10 @@
       currentPage = pageNum;
       updateProgress();
       
+      if (pushState) {
+        history.pushState({page: pageNum}, "", "?page=" + pageNum);
+      }
+      
       if (pageNum >= 1 && pageNum <= 6) {
         document.body.style.backgroundImage = "url('imagens/fundo.jpg')";
         document.body.style.backgroundColor = "";
@@ -305,6 +310,15 @@
         document.body.style.backgroundColor = "black";
       }
     }
+
+    // Listener para o evento popstate
+    window.addEventListener("popstate", function(event) {
+      if (event.state && event.state.page) {
+        showPage(event.state.page, false);
+      } else {
+        showPage(1, false);
+      }
+    });
 
     function nextPage() {
       console.log('nextPage() chamada. Página atual:', currentPage);
@@ -491,3 +505,4 @@
   </script>
 </body>
 </html>
+
