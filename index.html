@@ -157,7 +157,7 @@
   <!-- Página 3 -->
   <div id="page3" class="container fade hidden">
     <div class="box">
-      <p id="ageQuestion">Seja bem vinda <span id="userNamePlaceholder"></span>! Qual a sua idade?</p>
+      <p id="ageQuestion">Seja bem vindo(a) <span id="userNamePlaceholder"></span>! Qual a sua idade?</p>
       <form id="ageForm">
         <div style="margin:10px 0;">
           <input type="radio" name="age" value="menos18" id="menos18">
@@ -268,7 +268,7 @@
         Ao acessar o link abaixo, será exibido um kit com os produtos mais indicados para o cuidado da sua pele em casa.
         Caso prefira, é possível remover os itens que não desejar e adquirir apenas os produtos de sua escolha.
       </p>
-      <!-- Adicionamos target="_blank" para que o link abra em nova aba -->
+      <!-- Abre em nova aba para que o usuário mantenha a Página 8 aberta -->
       <a id="kitLink" href="#" target="_blank" style="font-size:1.2rem; text-decoration: none;"></a>
       <br>
       <a id="manualLink" href="#" download target="_blank" style="font-size:1rem; text-decoration: none; display:block; margin-top:20px;"></a>
@@ -298,8 +298,13 @@
       currentPage = pageNum;
       updateProgress();
       
+      // Se não for a Página 8, empurra o estado; para a Página 8, usamos replaceState
       if (pushState) {
-        history.pushState({page: pageNum}, "", "?page=" + pageNum);
+        if (pageNum === 8) {
+          history.replaceState({page: pageNum}, "", "?page=" + pageNum);
+        } else {
+          history.pushState({page: pageNum}, "", "?page=" + pageNum);
+        }
       }
       
       if (pageNum >= 1 && pageNum <= 6) {
@@ -494,7 +499,6 @@
       const kitLink = document.getElementById('kitLink');
       kitLink.innerText = result.buttonText;
       kitLink.href = result.url;
-      // Abre em nova aba para manter o estado da Página 8
       kitLink.setAttribute("target", "_blank");
       
       const manualLink = document.getElementById('manualLink');
